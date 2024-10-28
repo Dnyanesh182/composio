@@ -1,5 +1,5 @@
 """
-Setup configuration for compsio core.
+Setup configuration for composio core.
 """
 
 import typing as t
@@ -7,12 +7,12 @@ from pathlib import Path
 
 from setuptools import find_packages, setup
 
-COMPOSIO = Path(__file__).parent.resolve() / "composio"
+COMPOSIO_DIR = Path(__file__).parent.resolve() / "composio"
 
 
 def scan_for_package_data(
     directory: Path,
-    package: Path,
+    package_path: Path,
     data: t.Optional[t.List[str]] = None,
 ) -> t.List[str]:
     """Walk the package and scan for package files."""
@@ -22,12 +22,12 @@ def scan_for_package_data(
             continue
 
         if child.is_file():
-            data.append(str(child.relative_to(package)))
+            data.append(str(child.relative_to(package_path)))
             continue
 
         data += scan_for_package_data(
             directory=child,
-            package=package,
+            package_path=package_path,
         )
     return data
 
@@ -120,8 +120,8 @@ setup(
     include_package_data=True,
     package_data={
         "composio": scan_for_package_data(
-            directory=COMPOSIO,
-            package=COMPOSIO,
+            directory=COMPOSIO_DIR,
+            package_path=COMPOSIO_DIR,
         ),
     },
 )
